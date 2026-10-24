@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Student Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--sky1:#6EB1FF;--sky2:#A9D4FF;--cloud:#fff;--grass:#5DA130;--grass2:#4A8526;--dirt:#8B5A2B;--dirt2:#6F4520;--stone:#8B8B8B;--stone2:#5E5E5E;--panel:#C6A26B;--ink:#2B1B0C;--txt:#FFFFFF;--gold:#FFD84A;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--sky1:#0B1030;--sky2:#2A3470;--cloud:#6B739F}}
+:root[data-theme="dark"]{--sky1:#0B1030;--sky2:#2A3470;--cloud:#6B739F}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(var(--sky1),var(--sky2) 600px,var(--sky2));background-attachment:fixed;color:var(--txt);font:26px/1.25 VT323,monospace;image-rendering:pixelated}
+h1,h2,h3,.px{font-family:'Press Start 2P',monospace;line-height:1.5}
+a{color:inherit}
+:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px}
+.sh{text-shadow:3px 3px 0 #3F3F3F}
+/* XP bar */
+#xp{position:fixed;top:0;left:0;right:0;z-index:20;padding-top:env(safe-area-inset-top,0px);background:#000A;height:calc(30px + env(safe-area-inset-top,0px))}
+#xp i{position:absolute;left:0;bottom:0;height:14px;width:0;background:#7CFC00;box-shadow:inset 0 -4px #3FAE00,inset 0 4px #B7FF6A}
+#xp b{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) - 2px);transform:translateX(-50%);color:#7CFC00;font:12px 'Press Start 2P';text-shadow:2px 2px #000}
+nav{display:flex;justify-content:center;gap:6px;padding:46px 0 10px;flex-wrap:wrap}
+.slot{display:block;width:92px;padding:10px 0;text-align:center;text-decoration:none;font:10px 'Press Start 2P';background:#8B8B8B;border:4px solid;border-color:#DBDBDB #373737 #373737 #DBDBDB;color:#fff;text-shadow:2px 2px #3F3F3F}
+.slot:hover{background:#9C9CFF}
+/* hero */
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center;padding:30px 0 80px;position:relative}
+.cloud{position:absolute;height:28px;background:var(--cloud);box-shadow:28px -28px 0 var(--cloud),56px 0 0 var(--cloud);opacity:.9;animation:drift 60s linear infinite}
+@keyframes drift{from{transform:translateX(-120px)}to{transform:translateX(900px)}}
+.hero h1{font-size:clamp(1.3rem,4.4vw,2.6rem);margin:0 0 18px;position:relative}
+.hero p{font-size:30px;max-width:30em;margin:0 0 24px;text-shadow:2px 2px 0 #0006}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.mc{display:inline-block;padding:14px 20px;text-decoration:none;font:12px 'Press Start 2P';color:#fff;text-shadow:2px 2px #3F3F3F;background:#7E7E7E;border:4px solid;border-color:#DBDBDB #373737 #373737 #DBDBDB;cursor:pointer}
+.mc:hover{background:#6B7FD9}.mc:active{border-color:#373737 #DBDBDB #DBDBDB #373737}
+.mc.go{background:#4F9C2A}.mc.go:hover{background:#63C03A}
+/* card */
+.scene{perspective:900px;justify-self:center;width:min(100%,320px)}
+.card{position:relative;width:100%;aspect-ratio:3/4;border:0;padding:0;background:none;cursor:pointer;transform-style:preserve-3d;transition:transform .6s steps(8)}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:var(--panel);color:var(--ink);padding:20px;text-align:left;display:flex;flex-direction:column;border:6px solid;border-color:#E9CF9F #6B4A1E #6B4A1E #E9CF9F;box-shadow:0 0 0 4px #000,8px 8px 0 4px #0007}
+.face.back{transform:rotateY(180deg);background:#2B2B2B;color:#fff;border-color:#555 #111 #111 #555}
+.head{width:112px;height:112px;margin:0 auto 12px;border:4px solid #000;display:block}
+.face h3{font-size:12px;text-align:center;margin:0 0 6px}
+.role{text-align:center;font-size:22px;margin-bottom:8px}
+.row{display:flex;justify-content:space-between;gap:8px;border-top:4px dotted #0003;padding:5px 0;font-size:23px}
+.hint{margin-top:auto;text-align:center;font-size:20px;opacity:.7}
+.back h3{text-align:left;color:var(--gold);font-size:14px}
+.back p{font-size:25px}
+.stamp{margin-top:auto;align-self:flex-start;border:4px solid #7CFC00;color:#7CFC00;padding:6px 10px;font:10px 'Press Start 2P';transform:rotate(-5deg)}
+/* ground */
+.ground{height:48px;background:linear-gradient(var(--grass) 0 16px,var(--grass2) 16px 24px,var(--dirt) 24px);background-size:100% 100%;border-top:4px solid #000}
+section{padding:56px 0}
+h2{font-size:clamp(1rem,3.4vw,1.5rem);margin:0 0 24px}
+.panel{background:var(--dirt);color:#fff;border:6px solid;border-color:#B07B45 #4A2D12 #4A2D12 #B07B45;box-shadow:0 0 0 4px #000;padding:22px;background-image:repeating-linear-gradient(90deg,#0000 0 30px,#0000000F 30px 32px),repeating-linear-gradient(0deg,#0000 0 30px,#0000000F 30px 32px)}
+.panel p{margin:0;font-size:30px}
+.about{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}
+.inv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.inv div{aspect-ratio:1;background:#8B8B8B;border:4px solid;border-color:#373737 #FFF #FFF #373737;display:grid;place-items:center;font-size:38px;position:relative;cursor:help}
+.inv div::after{content:attr(data-n);position:absolute;bottom:105%;left:50%;transform:translateX(-50%) scale(0);white-space:nowrap;background:#100010;color:#fff;border:3px solid #2A0A6A;padding:4px 8px;font-size:22px;transition:transform .12s;z-index:5;transform-origin:bottom}
+.inv div:hover::after,.inv div:focus-visible::after{transform:translateX(-50%) scale(1)}
+.inv small{grid-column:1/-1;font-size:22px;opacity:.9}
+/* advancements */
+.tree{display:flex;flex-direction:column;gap:0;max-width:560px}
+.adv{display:flex;gap:16px;align-items:center;position:relative;padding-bottom:30px}
+.adv:last-child{padding-bottom:0}
+.adv:not(:last-child)::before{content:"";position:absolute;left:30px;top:64px;bottom:0;width:8px;background:#fff;opacity:.85}
+.ic{flex:none;width:68px;height:68px;display:grid;place-items:center;font-size:34px;background:#8B8B8B;border:4px solid #000;box-shadow:inset 4px 4px #DBDBDB,inset -4px -4px #555}
+.adv.done .ic{background:#E6B800;box-shadow:inset 4px 4px #FFE98A,inset -4px -4px #A57F00}
+.adv.lock .ic{filter:grayscale(1);opacity:.75}
+.adv b{display:block;font:12px 'Press Start 2P';color:var(--gold);margin-bottom:6px}
+.adv.lock b{color:#ddd}
+.adv span{font-size:28px;text-shadow:2px 2px #0006}
+/* chat */
+.chat{background:#000A;padding:16px;font-size:28px;margin-bottom:22px;border:4px solid #000}
+.chat p{margin:0 0 6px;text-shadow:2px 2px #000}.chat .n{color:#7CFC00}.chat .y{color:var(--gold)}
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.contact a{display:block;text-decoration:none;font-size:30px;padding:18px;background:#7E7E7E;border:4px solid;border-color:#DBDBDB #373737 #373737 #DBDBDB;overflow-wrap:anywhere}
+.contact a:hover{background:#6B7FD9}
+.contact small{display:block;font:10px 'Press Start 2P';margin-bottom:10px;color:var(--gold)}
+/* mining */
+.mine{display:flex;flex-wrap:wrap;gap:0;justify-content:center;margin-top:50px}
+.blk{width:48px;height:48px;border:0;padding:0;cursor:pointer;background:linear-gradient(var(--grass) 0 14px,var(--dirt) 14px);box-shadow:inset 0 0 0 3px #0003;transition:transform .15s,opacity .15s}
+.blk.dead{transform:scale(.2) rotate(40deg);opacity:0;pointer-events:none}
+.count{text-align:center;font:10px 'Press Start 2P';margin:16px 0 10px}
+.legal{text-align:center;padding:10px 0 40px;font-size:24px;opacity:.9}
+/* toast */
+.ach{position:fixed;top:calc(40px + env(safe-area-inset-top,0px));right:12px;z-index:30;display:flex;gap:12px;align-items:center;background:#1a1a1a;border:4px solid #000;outline:4px solid #6a6a6a;padding:10px 16px;transform:translateX(130%);transition:transform .5s steps(10)}
+.ach.show{transform:none}
+.ach .ic{width:48px;height:48px;font-size:26px}
+.ach b{display:block;font:10px 'Press Start 2P';color:var(--gold);margin-bottom:6px}
+.ach span{font-size:24px}
+@media(max-width:780px){.hero,.about,.contact{grid-template-columns:1fr}.slot{width:84px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="xp"><i id="xpf"></i><b id="lvl">LVL 0</b></div>
+<div class="ach" id="ach" role="status"><div class="ic">🏆</div><div><b>Advancement Made!</b><span>Welcome to my world</span></div></div>
+<div class="wrap">
+  <nav aria-label="Main"><a class="slot" href="#about">About</a><a class="slot" href="#path">Path</a><a class="slot" href="#contact">Contact</a></nav>
+
+  <header class="hero">
+    <div class="cloud" style="top:10px;left:0"></div><div class="cloud" style="top:150px;left:-60px;animation-delay:-30s"></div>
+    <div style="position:relative">
+      <h1 class="sh" id="heroName">Maulana Jalaluddin Rumi</h1>
+      <p>Hi, I’m Rumi! A book lover and curious student who is learning to code in Python and C++. Welcome to my world.</p>
+      <div class="btns"><a class="mc go" href="#contact">Join my world</a><a class="mc" id="igBtn" href="#" target="_blank" rel="noopener">My Instagram</a></div>
+    </div>
+    <div class="scene">
+      <button class="card" id="card" aria-label="Player card. Press to flip.">
+        <div class="face">
+          <svg class="head" viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true"><rect width="8" height="8" fill="#C58C6A"/><rect width="8" height="2" fill="#3B2A1A"/><rect y="2" width="1" height="1" fill="#3B2A1A"/><rect x="7" y="2" width="1" height="1" fill="#3B2A1A"/><rect x="1" y="4" width="2" height="1" fill="#fff"/><rect x="5" y="4" width="2" height="1" fill="#fff"/><rect x="2" y="4" width="1" height="1" fill="#3C4FA0"/><rect x="5" y="4" width="1" height="1" fill="#3C4FA0"/><rect x="3" y="5" width="2" height="1" fill="#A66E4F"/><rect x="2" y="6" width="4" height="1" fill="#7A4B33"/></svg>
+          <h3 id="cardName">Maulana Jalaluddin Rumi</h3>
+          <div class="role" id="cardRole"></div>
+          <div class="row"><b>Phone</b><span id="cardPhone"></span></div>
+          <div class="row"><b>Insta</b><span id="cardIg"></span></div>
+          <div class="hint">Press to flip</div>
+        </div>
+        <div class="face back"><h3>Current quest</h3><p id="cardNow"></p><div class="stamp">VERIFIED STUDENT</div></div>
+      </button>
+    </div>
+  </header>
+</div>
+<div class="ground"></div>
+<div class="wrap">
+  <section id="about">
+    <h2 class="sh">About me</h2>
+    <div class="about">
+      <div class="panel"><p id="bio"></p></div>
+      <div class="panel"><div class="inv" id="inv"></div></div>
+    </div>
+  </section>
+
+  <section id="path">
+    <h2 class="sh">Advancements</h2>
+    <div class="tree" id="tree"></div>
+  </section>
+
+  <section id="contact">
+    <h2 class="sh">Chat with me</h2>
+    <div class="chat"><p><span class="n">&lt;Maulana&gt;</span> Hey, thanks for visiting!</p><p><span class="n">&lt;Maulana&gt;</span> Call me or send a DM below.</p><p><span class="y">Tip: tap the blocks at the bottom of the page.</span></p></div>
+    <div class="contact">
+      <a id="phoneLink" href="#"><small>PHONE</small><span id="phoneText"></span></a>
+      <a id="igLink" href="#" target="_blank" rel="noopener"><small>INSTAGRAM</small><span id="igText"></span></a>
+    </div>
+  </section>
+
+  <div class="count" id="count">Blocks mined: 0 / 12</div>
+  <div class="mine" id="mine"></div>
+  <div class="legal">© <span id="year"></span> Maulana Jalaluddin Rumi</div>
+</div>
+<script>
+const ME={fullName:"Maulana Jalaluddin Rumi",phone:"+62 878 1653 7117",instagram:"kn1dle",role:"Student at SMK Tunas Bangsa Deces",
+now:"Reading books and learning Python and C++.",
+bio:"Hello, my name is Rumi, and I’m currently a senior high school student at SMK Tunas Bangsa Deces. I love reading books, and they keep my mind curious and full of new ideas. Right now, I’m learning new programming languages like Python and C++, and I’m excited to turn what I learn into real projects.",
+items:[["📚","Reading books"],["🐍","Python"],["⚙️","C++"],["⛏️","Making projects"],["🧠","Always learning"],["🎓","Future university student"]],
+path:[["🏫","Now","Senior high school student at SMK Tunas Bangsa Deces","done"],["📖","Before","Junior high school at MTs Al-Kautsar","done"],["🎓","Next","My goal is to get into a university","lock"]]};
+const $=id=>document.getElementById(id);
+const handle=ME.instagram.replace(/^@/,"");
+$("cardRole").textContent=ME.role;$("cardNow").textContent=ME.now;$("bio").textContent=ME.bio;
+$("cardPhone").textContent=ME.phone;$("phoneText").textContent=ME.phone;$("phoneLink").href="tel:"+ME.phone.replace(/[^\d+]/g,"");
+$("cardIg").textContent="@"+handle;$("igText").textContent="@"+handle;
+["igBtn","igLink"].forEach(i=>$(i).href="https://instagram.com/"+handle);
+$("inv").innerHTML=ME.items.map(i=>`<div tabindex="0" data-n="${i[1]}">${i[0]}</div>`).join("")+`<small>Hover an item to see it.</small>`;
+$("tree").innerHTML=ME.path.map(p=>`<div class="adv ${p[3]}"><div class="ic">${p[0]}</div><div><b>${p[1]}</b><span>${p[2]}</span></div></div>`).join("");
+$("year").textContent=new Date().getFullYear();
+$("card").onclick=()=>$("card").classList.toggle("flip");
+/* XP bar */
+const upd=()=>{const h=document.documentElement,m=h.scrollHeight-innerHeight,p=m>0?scrollY/m:0;$("xpf").style.width=(p*100)+"%";$("lvl").textContent="LVL "+Math.floor(p*30)};
+addEventListener("scroll",upd,{passive:true});upd();
+/* achievement toast */
+setTimeout(()=>$("ach").classList.add("show"),700);setTimeout(()=>$("ach").classList.remove("show"),4800);
+/* mining */
+let mined=0;const N=12;
+$("mine").innerHTML=Array.from({length:N},()=>`<button class="blk" aria-label="Mine block"></button>`).join("");
+$("mine").addEventListener("click",e=>{const b=e.target.closest(".blk");if(!b||b.classList.contains("dead"))return;b.classList.add("dead");mined++;
+$("count").textContent=mined===N?"All blocks mined! You are a true miner ⛏️":`Blocks mined: ${mined} / ${N}`});
+</script>
+</body>
+</html>
